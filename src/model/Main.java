@@ -23,17 +23,9 @@ public class Main extends Application {
         fxmlLoader.setLocation(this.getClass().getResource("/view/MainView.fxml"));
         Pane pane = fxmlLoader.load();
 
-        MeshDrawing meshDrawing = new MeshDrawing();
-
-
         Scene scene = new Scene(pane);
-        //primaryStage.setFullScreen(true);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Grains");
-
-
-       // meshDrawing.drawHex();
-
         primaryStage.show();
         primaryStage.setResizable(false);
     }

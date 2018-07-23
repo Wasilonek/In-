@@ -2,17 +2,40 @@ package model;
 
 import javafx.scene.paint.Color;
 
+import java.util.Random;
+
 public class Grain {
     private int state, nextState, id, newId;
-    private Color oldColor, newColor;
+    private Color color, newColor;
+    private Grain[] neighbours;
+
+    Random random;
+
 
 
     public Grain() {
+        neighbours = new Grain[6];
         state = nextState = 0;
         id = newId = -1;
-        oldColor = Color.GREEN;
+
+
+        random = new Random();
+       // color = Color.color(random.nextDouble(),random.nextDouble(),random.nextDouble());
+//        int choice = random.nextInt(1);
+//        if(choice == 0){
+            color = Color.WHITE;
+//        }
+//        if(choice == 1){
+//            color = Color.BLUE;
+//        }
+
+
+
+
         newColor = Color.WHITE;
     }
+
+
 
     public int getState() {
         return state;
@@ -46,12 +69,12 @@ public class Grain {
         this.newId = newId;
     }
 
-    public Color getOldColor() {
-        return oldColor;
+    public Color getColor() {
+        return color;
     }
 
-    public void setOldColor(Color oldColor) {
-        this.oldColor = oldColor;
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public Color getNewColor() {
@@ -60,5 +83,9 @@ public class Grain {
 
     public void setNewColor(Color newColor) {
         this.newColor = newColor;
+    }
+
+    public void setSingleNeighbour(int index, Grain singleNeighbour) {
+        this.neighbours[index] = singleNeighbour;
     }
 }

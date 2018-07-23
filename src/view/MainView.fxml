@@ -7,9 +7,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
-      <Canvas fx:id="canvas" height="600.0" layoutX="6.0" width="600.0" />
+      <Canvas fx:id="canvas" height="500.0" width="500.0" />
+      <TextField fx:id="widthField" layoutX="1051.0" layoutY="6.0" promptText="Enter width" />
+      <TextField fx:id="heightField" layoutX="1051.0" layoutY="53.0" promptText="Enter height" />
+      <Button layoutX="1051.0" layoutY="94.0" mnemonicParsing="false" onAction="#setSizeAction" text="Set canvas size" />
+      <Button layoutX="1051.0" layoutY="180.0" mnemonicParsing="false" onAction="#randGrainsAction" text="Rand Grains" />
+      <TextField fx:id="numberOfGrainsField" layoutX="1051.0" layoutY="147.0" text="5" />
+      <Label layoutX="1051.0" layoutY="130.0" text="Number of grains" />
+      <Button layoutX="1051.0" layoutY="389.0" mnemonicParsing="false" onAction="#clearAction" text="Clear canvas" />
    </children>
 </Pane>
