@@ -33,8 +33,8 @@ public class GrainGrowth {
     public GrainGrowth() {
         random = new Random();
         createGrid();
-        randomGrains(5);
-        setNeigboursForEachGrain();
+        //randomGrains(5);
+        //setNeigboursForEachGrain();
 
 
         // Do innej klasy
@@ -57,9 +57,16 @@ public class GrainGrowth {
     }
 
     public void changeGridSize(int canvasWidth, int canvasHeight) {
-        Data.setHexRows((canvasWidth / Data.getHexHeight()));
+//        r = h / 2;
+//        s = (int) (h / 1.73205);
+//        t = (int) (r / 1.73205);
+
         Data.setHexColumns((canvasHeight / Data.getHexHeight()));
+
+        Data.setHexRows((int)((canvasWidth / Data.getHexHeight()) * 1.6));
+
         createGrid();
+        System.out.println(Data.getHexRows() + " " + Data.getHexColumns());
     }
 
     public void randomGrains(int numberOfGrains) {
@@ -83,7 +90,7 @@ public class GrainGrowth {
             //grainGrid[x][y].setColor(Color.ORANGE);
             i++;
         }
-        System.out.println(Data.getHexRows() + " " + Data.getHexColumns());
+
     }
 
     public void clearArray() {
