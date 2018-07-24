@@ -1,6 +1,5 @@
 package model;
 
-import controller.MainController;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -13,10 +12,23 @@ import java.util.Random;
  * Created by Kamil on 2018-07-17.
  */
 public class GrainGrowth {
+
     private Grain[][] grainGrid;
+
     private int indexRight, indexLeft, indexUp, indexDown;
-    private MainController mainController;
+
     private Random random;
+
+
+    // Do innej klasy
+
+    private int s;
+    private int t;
+    private int r;
+    private int h;
+
+    //********************************
+
 
     public GrainGrowth() {
         random = new Random();
@@ -25,16 +37,17 @@ public class GrainGrowth {
         setNeigboursForEachGrain();
 
 
+        // Do innej klasy
 
-        BORDERS = 0; //default number of pixels for the border.
+        h = Data.getHexHeight();
+        r = h / 2;
+        s = (int) (h / 1.73205);
+        t = (int) (r / 1.73205);
 
-        h = Data.getHexSize();            // h = basic dimension: height (distance between two adj centresr aka size)
-        r = h / 2;            // r = radius of inscribed circle
-        s = (int) (h / 1.73205);    // s = (h/2)/cos(30)= (h/2) / (sqrt(3)/2) = h / sqrt(3)
-        t = (int) (r / 1.73205);    // t = (h/2) tan30 = (h/2) 1/sqrt(3) = h / (2 sqrt(3)) = r / sqrt(3)
+        //*******************************************************88
     }
 
-    public void createGrid(){
+    public void createGrid() {
         grainGrid = new Grain[Data.getHexRows()][Data.getHexColumns()];
         for (int i = 0; i < Data.getHexRows(); i++) {
             for (int j = 0; j < Data.getHexColumns(); j++) {
@@ -43,23 +56,34 @@ public class GrainGrowth {
         }
     }
 
+    public void changeGridSize(int canvasWidth, int canvasHeight) {
+        Data.setHexRows((canvasWidth / Data.getHexHeight()));
+        Data.setHexColumns((canvasHeight / Data.getHexHeight()));
+        createGrid();
+    }
+
     public void randomGrains(int numberOfGrains) {
-        int x,y;
+        int x, y;
         clearArray();
 
-        for (int i = 0; i < 10; i++) {
+        int k = 0;
+        for (int i = 0; i < numberOfGrains; ) {
 
             x = random.nextInt(Data.getHexRows());
             y = random.nextInt(Data.getHexColumns());
-//            if (grainGrid[x][y].getState() == 1) {
-//                continue;
-//            }
+            if (grainGrid[x][y].getState() == 1) {
+                if (k == 10000)
+                    break;
+                k++;
+                continue;
+            }
             grainGrid[x][y].setState(1);
             grainGrid[x][y].setId(i);
             grainGrid[x][y].setColor(Color.color(random.nextDouble(), random.nextDouble(), random.nextDouble()));
-            //grainGrid[x][y].setColor(Color.RED);
-            //i++;
+            //grainGrid[x][y].setColor(Color.ORANGE);
+            i++;
         }
+        System.out.println(Data.getHexRows() + " " + Data.getHexColumns());
     }
 
     public void clearArray() {
@@ -73,6 +97,43 @@ public class GrainGrowth {
                 grainGrid[i][j].setId(-1);
             }
         }
+    }
+
+    public void drawHex(GraphicsContext graphicsContext, int h) {
+        double y, x;
+
+        //Ponownie obliczam wielkosci w oparciu o nowe h
+        this.h = h;
+        r = h / 2;
+        s = (int) (h / 1.73205);
+        t = (int) (r / 1.73205);
+
+        System.out.println("s:" + s + " h:" + h + " r:" + r + " t:" + t);
+
+        for (int i = 0; i < Data.getHexRows(); i++) {
+            for (int j = 0; j < Data.getHexColumns(); j++) {
+                int x1 = i * (s + t);
+                int y1 = j * h + (i % 2) * h / 2;
+
+                y = y1;
+                x = x1;
+
+                if (grainGrid[i][j].getState() == 1) {
+                    graphicsContext.setFill(grainGrid[i][j].getColor());
+                    graphicsContext.fillPolygon(new double[]{x + t, x + s + t, x + s + t + t, x + s + t, x + t, x},
+                            new double[]{y, y, y + r, y + r + r, y + r + r, y + r}, 6);
+                }
+            }
+        }
+    }
+
+
+    public Grain[][] getGrainGrid() {
+        return grainGrid;
+    }
+
+    public Grain getGrain(int i, int j) {
+        return grainGrid[i][j];
     }
 
     private void fillMap(int id, Map<Integer, Integer> grainMap) {
@@ -105,8 +166,8 @@ public class GrainGrowth {
     }
 
     public void setNeigboursForEachGrain() {
-        for (int i = 1; i < Data.getHexRows()-1; i++) {
-            for (int j = 1; j < Data.getHexColumns()-1; j++) {
+        for (int i = 1; i < Data.getHexRows() - 1; i++) {
+            for (int j = 1; j < Data.getHexColumns() - 1; j++) {
                 if (i % 2 == 0) {
                     setEdge(i, j);
 
@@ -163,42 +224,5 @@ public class GrainGrowth {
             indexRight = 0;
     }
 
-    public Grain[][] getGrainGrid() {
-        return grainGrid;
-    }
-    public Grain getGrain(int i , int j){
-        return grainGrid[i][j];
-    }
 
-
-
-    GrainGrowth grainGrowth;
-
-    private int s;    // length of one side
-    private int t;    // short side of 30o triangle outside of each hex
-    private int r;    // radius of inscribed circle (centre to middle of each side). r= h/2
-    private int h;    // height. Distance between centres of two adjacent hexes. Distance between two opposite sides in a hex.
-
-    private int BORDERS;    //default number of pixels for the border.
-
-
-    public void drawHex(GraphicsContext graphicsContext) {
-        double y, x;
-
-        for (int i = 0; i < Data.getHexRows(); i++) {
-            for (int j = 0; j < Data.getHexColumns(); j++) {
-                int x1 = i * (s + t);
-                int y1 = j * h + (i % 2) * h / 2;
-
-                y = y1 + BORDERS;
-                x = x1 + BORDERS;
-
-                if (grainGrid[i][j].getState() == 1) {
-                    graphicsContext.setFill(grainGrid[i][j].getColor());
-                    graphicsContext.fillPolygon(new double[]{x + t, x + s + t, x + s + t + t, x + s + t, x + t, x},
-                            new double[]{y, y, y + r, y + r + r, y + r + r, y + r}, 6);
-                }
-            }
-        }
-    }
 }

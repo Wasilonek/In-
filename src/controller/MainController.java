@@ -1,13 +1,16 @@
 package controller;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import model.Data;
 import model.GrainGrowth;
-import model.MeshDrawing;
+
+import javax.imageio.ImageIO;
+import java.io.File;
 
 
 public class MainController {
@@ -24,16 +27,37 @@ public class MainController {
     @FXML
     TextField numberOfGrainsField;
 
+    @FXML
+    Label widthLabel, heightLabel;
+
+    @FXML
+    ChoiceBox<String> grainSizeChoicebox;
+
+
     private GraphicsContext graphicsContext;
-   // MeshDrawing meshDrawing = new MeshDrawing();
     GrainGrowth grainGrowth;
+
+    private WritableImage writableImage;
 
 
     @FXML
     void initialize() {
         grainGrowth = new GrainGrowth();
+
+        setGrainSizeChoiceBoxItems();
+        grainSizeChoicebox.setValue("4");
+
         graphicsContext = canvas.getGraphicsContext2D();
-        grainGrowth.drawHex(graphicsContext);
+
+        grainGrowth.drawHex(graphicsContext,Integer.parseInt(grainSizeChoicebox.getValue()));
+
+        widthLabel.setText(String.valueOf(canvas.getWidth()));
+        heightLabel.setText(String.valueOf(canvas.getHeight()));
+
+    }
+
+    private void setGrainSizeChoiceBoxItems() {
+        grainSizeChoicebox.getItems().addAll("4", "8", "12");
     }
 
     @FXML
@@ -54,7 +78,7 @@ public class MainController {
         try {
             if (!grainH.matches("\\d*")) {
                 wrongFormatAlertMessage();
-                canvas.setHeight(Data.getHexSize());
+                canvas.setHeight(Data.getHexHeight());
             } else {
                 canvas.setHeight(Double.valueOf(heightField.getText()));
             }
@@ -68,25 +92,28 @@ public class MainController {
 
             alert.showAndWait();
         }
-        refreshCanvas();
+        widthLabel.setText(String.valueOf(canvas.getWidth()));
+        heightLabel.setText(String.valueOf(canvas.getHeight()));
+
+        grainGrowth.changeGridSize((int)canvas.getWidth(),(int)canvas.getHeight());
+        clearCanvas();
     }
 
     @FXML
     public void refreshCanvas() {
         clearCanvas();
-        grainGrowth.drawHex(graphicsContext);
+        grainGrowth.drawHex(graphicsContext,Integer.parseInt(grainSizeChoicebox.getValue()));
     }
 
     @FXML
-    public void randGrainsAction(){
-       //clearCanvas();
-        grainGrowth.randomGrains(5);
+    public void randGrainsAction() {
+        //Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
+        grainGrowth.randomGrains(Integer.parseInt(numberOfGrainsField.getText()));
         refreshCanvas();
-        //grainGrowth.drawHex(graphicsContext);
     }
 
     @FXML
-    public void clearAction(){
+    public void clearAction() {
         clearCanvas();
     }
 
@@ -101,5 +128,18 @@ public class MainController {
     public void clearCanvas() {
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
+
+    public void saveImageAction() {
+        writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
+        canvas.snapshot(null, writableImage);
+
+        File file = new File("CanvasImage.png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", file);
+        } catch (Exception s) {
+        }
+    }
+
 }
 

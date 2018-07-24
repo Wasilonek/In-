@@ -2,39 +2,18 @@ package model;
 
 import javafx.scene.paint.Color;
 
-import java.util.Random;
-
 public class Grain {
     private int state, nextState, id, newId;
     private Color color, newColor;
     private Grain[] neighbours;
-
-    Random random;
-
 
 
     public Grain() {
         neighbours = new Grain[6];
         state = nextState = 0;
         id = newId = -1;
-
-
-        random = new Random();
-       // color = Color.color(random.nextDouble(),random.nextDouble(),random.nextDouble());
-//        int choice = random.nextInt(1);
-//        if(choice == 0){
-            color = Color.WHITE;
-//        }
-//        if(choice == 1){
-//            color = Color.BLUE;
-//        }
-
-
-
-
         newColor = Color.WHITE;
     }
-
 
 
     public int getState() {
