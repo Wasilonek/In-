@@ -9,7 +9,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
-      <Canvas fx:id="canvas" height="1000.0" width="1000.0" />
+      <Canvas fx:id="canvas" height="192.0" width="192.0" />
       <TextField fx:id="widthField" layoutX="1051.0" layoutY="6.0" promptText="Enter width" />
       <TextField fx:id="heightField" layoutX="1051.0" layoutY="53.0" promptText="Enter height" />
       <Button layoutX="1051.0" layoutY="94.0" mnemonicParsing="false" onAction="#setSizeAction" text="Set canvas size" />
@@ -24,5 +24,6 @@
       <Label layoutX="1052.0" layoutY="212.0" text="Wybierz wielkość ziarna" />
       <ChoiceBox fx:id="grainSizeChoicebox" layoutX="1050.0" layoutY="229.0" prefWidth="150.0" />
       <Button layoutX="1050.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveImageAction" text="Save image" />
+      <Button layoutX="1050.0" layoutY="276.0" mnemonicParsing="false" onAction="#onePeriodAction" text="One period" />
    </children>
 </Pane>

@@ -52,9 +52,9 @@ public class MainController {
         graphicsContext = canvas.getGraphicsContext2D();
 
         Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
-        grainGrowth.changeGridSize((int)canvas.getWidth(),(int)canvas.getHeight());
+        grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
 
-        grainGrowth.drawHex(graphicsContext,Integer.parseInt(grainSizeChoicebox.getValue()));
+        grainGrowth.drawHex(graphicsContext, Integer.parseInt(grainSizeChoicebox.getValue()));
 
         widthLabel.setText(String.valueOf(canvas.getWidth()));
         heightLabel.setText(String.valueOf(canvas.getHeight()));
@@ -101,22 +101,28 @@ public class MainController {
         heightLabel.setText(String.valueOf(canvas.getHeight()));
 
         Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
-        grainGrowth.changeGridSize((int)canvas.getWidth(),(int)canvas.getHeight());
+        grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
         clearCanvas();
     }
 
     @FXML
     public void refreshCanvas() {
         clearCanvas();
-        grainGrowth.drawHex(graphicsContext,Integer.parseInt(grainSizeChoicebox.getValue()));
+        grainGrowth.drawHex(graphicsContext, Integer.parseInt(grainSizeChoicebox.getValue()));
     }
 
     @FXML
     public void randGrainsAction() {
         Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
-        grainGrowth.changeGridSize((int)canvas.getWidth(),(int)canvas.getHeight());
+        grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
         grainGrowth.randomGrains(Integer.parseInt(numberOfGrainsField.getText()));
         refreshCanvas();
+    }
+
+    @FXML
+    public void onePeriodAction() {
+        grainGrowth.setNeigboursForEachGrain();
+        grainGrowth.drawHex(graphicsContext, Integer.parseInt(grainSizeChoicebox.getValue()));
     }
 
     @FXML
