@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.*?>
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
-      <Canvas fx:id="canvas" height="400.0" width="400.0" />
-      <TextField fx:id="widthField" layoutX="1051.0" layoutY="6.0" promptText="Enter width" />
-      <TextField fx:id="heightField" layoutX="1051.0" layoutY="53.0" promptText="Enter height" />
-      <Button layoutX="1051.0" layoutY="94.0" mnemonicParsing="false" onAction="#setSizeAction" text="Set canvas size" />
-      <Button layoutX="1051.0" layoutY="180.0" mnemonicParsing="false" onAction="#randGrainsAction" text="Rand Grains" />
-      <TextField fx:id="numberOfGrainsField" layoutX="1051.0" layoutY="147.0" text="5" />
-      <Label layoutX="1051.0" layoutY="130.0" text="Number of grains to rand" />
-      <Button layoutX="1051.0" layoutY="389.0" mnemonicParsing="false" onAction="#clearAction" text="Clear canvas" />
-      <Label layoutX="1051.0" layoutY="31.0" text="Actual width:" />
-      <Label layoutX="1051.0" layoutY="78.0" text="Actual height:" />
-      <Label fx:id="widthLabel" layoutX="1130.0" layoutY="31.0" text="Label" />
-      <Label fx:id="heightLabel" layoutX="1131.0" layoutY="78.0" text="Label" />
-      <Label layoutX="1052.0" layoutY="212.0" text="Wybierz wielkość ziarna" />
-      <ChoiceBox fx:id="grainSizeChoicebox" layoutX="1050.0" layoutY="229.0" prefWidth="150.0" />
-      <Button layoutX="1050.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveImageAction" text="Save image" />
-      <Button layoutX="1050.0" layoutY="276.0" mnemonicParsing="false" onAction="#onePeriodAction" text="One period" />
+      <Canvas fx:id="canvas" height="500.0" width="500.0" />
+      <Button layoutX="514.0" layoutY="64.0" mnemonicParsing="false" onAction="#randGrainsAction" text="Rand Grains" />
+      <TextField fx:id="numberOfGrainsField" layoutX="515.0" layoutY="31.0" text="5" />
+      <Label layoutX="515.0" layoutY="14.0" text="Number of grains to rand" />
+      <Button layoutX="514.0" layoutY="191.0" mnemonicParsing="false" onAction="#clearAction" text="Clear canvas" />
+      <Button layoutX="516.0" layoutY="222.0" mnemonicParsing="false" onAction="#saveImageAction" text="Save image" />
+      <Button layoutX="517.0" layoutY="96.0" mnemonicParsing="false" onAction="#onePeriodAction" text="One period" />
+      <Button layoutX="513.0" layoutY="128.0" mnemonicParsing="false" onAction="#growthStartAction" text="Growth start" />
+      <Button layoutX="514.0" layoutY="160.0" mnemonicParsing="false" onAction="#growthStopAction" text="Growth stop" />
    </children>
 </Pane>

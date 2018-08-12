@@ -6,8 +6,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
-import model.Data;
 import model.GrainGrowth;
+import model.GrainTask;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -19,114 +19,41 @@ public class MainController {
     Canvas canvas;
 
     @FXML
-    TextField widthField;
-
-    @FXML
-    TextField heightField;
-
-    @FXML
     TextField numberOfGrainsField;
-
-    @FXML
-    Label widthLabel, heightLabel;
-
-    @FXML
-    ChoiceBox<String> grainSizeChoicebox;
 
 
     private GraphicsContext graphicsContext;
-    GrainGrowth grainGrowth;
-
+    private GrainGrowth grainGrowth;
     private WritableImage writableImage;
 
+    private boolean isStartOn, isOneDrawnigThread;
+
+    private GrainTask grainTask;
 
     @FXML
     void initialize() {
         grainGrowth = new GrainGrowth();
 
-        setGrainSizeChoiceBoxItems();
-        grainSizeChoicebox.setValue("4");
-
-        numberOfGrainsField.setText("10000");
+        isStartOn = false;
+        isOneDrawnigThread = true;
 
         graphicsContext = canvas.getGraphicsContext2D();
 
-        Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
-        grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
+        // ustaw wstępną ilość ziaren do wylosowania
+        numberOfGrainsField.setText("40");
 
-        setCanvasSizeLabels();
-    }
-
-    private void setGrainSizeChoiceBoxItems() {
-        grainSizeChoicebox.getItems().addAll("4", "8", "12");
-    }
-
-    public void setCanvasSizeLabels() {
-        widthLabel.setText(String.valueOf(canvas.getWidth()));
-        heightLabel.setText(String.valueOf(canvas.getHeight()));
-    }
-
-    @FXML
-    public void setSizeAction() {
-
-        String grainW = widthField.getText();
-        String grainH = heightField.getText();
-        try {
-            if ((!grainW.matches("\\d*"))) {
-                wrongFormatAlertMessage();
-
-            } else {
-                if (Double.valueOf(widthField.getText()) > 1000) {
-                    showToBigCanvasAlert();
-                    canvas.setWidth(Data.getMaxCanvasWidth());
-                } else {
-                    canvas.setWidth(Double.valueOf(widthField.getText()));
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Bład z szerokością");
-        }
-
-        try {
-            if (!grainH.matches("\\d*")) {
-                wrongFormatAlertMessage();
-
-            } else {
-                if (Double.valueOf(heightField.getText()) > 1000) {
-                    showToBigCanvasAlert();
-                    canvas.setHeight(Data.getMaxCanvasHeight());
-                } else {
-                    canvas.setHeight(Double.valueOf(heightField.getText()));
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Bład z wysokościa");
-        }
-
-        setCanvasSizeLabels();
-
-        Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
-        grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
-        clearCanvas();
-    }
-
-    public void showToBigCanvasAlert() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning Dialog");
-        alert.setContentText("Max size is 1000x1000!");
-        alert.showAndWait();
+//        grainGrowth.randColorForEveryId(Integer.parseInt(numberOfGrainsField.getText()));
     }
 
     @FXML
     public void refreshCanvas() {
         clearCanvas();
-        grainGrowth.drawHex(graphicsContext, Integer.parseInt(grainSizeChoicebox.getValue()));
+        grainGrowth.drawHex(graphicsContext);
     }
 
     @FXML
     public void randGrainsAction() {
-        Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
-        grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
+        grainGrowth.randColorForEveryId(Integer.parseInt(numberOfGrainsField.getText()));
         grainGrowth.randomGrains(Integer.parseInt(numberOfGrainsField.getText()));
         refreshCanvas();
     }
@@ -134,20 +61,35 @@ public class MainController {
     @FXML
     public void onePeriodAction() {
         grainGrowth.setNeigboursForEachGrain();
-        grainGrowth.drawHex(graphicsContext, Integer.parseInt(grainSizeChoicebox.getValue()));
+        grainGrowth.drawHex(graphicsContext);
+    }
+
+    @FXML
+    public void growthStartAction() {
+        isStartOn = true;
+        if (isOneDrawnigThread) {
+            grainTask = new GrainTask(grainGrowth, graphicsContext , this);
+            Thread thread = new Thread(grainTask);
+            thread.setDaemon(true);
+            thread.start();
+            isOneDrawnigThread = false;
+        }
+    }
+
+    @FXML
+    public void growthStopAction() {
+        isStartOn = false;
+        isOneDrawnigThread = true;
+        try {
+            grainTask.setStopStatus(true);
+        } catch (NullPointerException e) {
+            System.out.println("Rozrost nie wystartował");
+        }
     }
 
     @FXML
     public void clearAction() {
         clearCanvas();
-    }
-
-    public void wrongFormatAlertMessage() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning Dialog");
-        alert.setHeaderText("Wrong format");
-        alert.setContentText("Write only number!");
-        alert.showAndWait();
     }
 
     public void clearCanvas() {
@@ -166,5 +108,12 @@ public class MainController {
         }
     }
 
+    public void setStartOn(boolean startOn) {
+        isStartOn = startOn;
+    }
+
+    public void setOneDrawnigThread(boolean oneDrawnigThread) {
+        isOneDrawnigThread = oneDrawnigThread;
+    }
 }
 
