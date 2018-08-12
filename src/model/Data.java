@@ -1,22 +1,14 @@
 package model;
 
-import java.util.Random;
-
-/**
- * Created by Kamil on 2018-07-17.
- */
 public class Data {
-
-    Random random = new Random();
 
     private static int maxCanvasWidth = 1000;
     private static int maxCanvasHeight = 1000;
 
     private static int hexHeight = 4; // min 4
 
-    private static int hexRows = 250;
-    private static int hexColumns = 250;
-
+    private static int hexRows = 100;
+    private static int hexColumns = 100;
 
 
     public static int getHexHeight() {

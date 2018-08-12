@@ -45,7 +45,7 @@ public class MainController {
         grainGrowth = new GrainGrowth();
 
         setGrainSizeChoiceBoxItems();
-        grainSizeChoicebox.setValue("8");
+        grainSizeChoicebox.setValue("4");
 
         numberOfGrainsField.setText("10000");
 
@@ -54,15 +54,16 @@ public class MainController {
         Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
         grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
 
-        grainGrowth.drawHex(graphicsContext, Integer.parseInt(grainSizeChoicebox.getValue()));
-
-        widthLabel.setText(String.valueOf(canvas.getWidth()));
-        heightLabel.setText(String.valueOf(canvas.getHeight()));
-
+        setCanvasSizeLabels();
     }
 
     private void setGrainSizeChoiceBoxItems() {
         grainSizeChoicebox.getItems().addAll("4", "8", "12");
+    }
+
+    public void setCanvasSizeLabels() {
+        widthLabel.setText(String.valueOf(canvas.getWidth()));
+        heightLabel.setText(String.valueOf(canvas.getHeight()));
     }
 
     @FXML
@@ -71,38 +72,49 @@ public class MainController {
         String grainW = widthField.getText();
         String grainH = heightField.getText();
         try {
-            if (!grainW.matches("\\d*")) {
+            if ((!grainW.matches("\\d*"))) {
                 wrongFormatAlertMessage();
-                canvas.setWidth(Data.getMaxCanvasWidth());
+
             } else {
-                canvas.setWidth(Double.valueOf(widthField.getText()));
+                if (Double.valueOf(widthField.getText()) > 1000) {
+                    showToBigCanvasAlert();
+                    canvas.setWidth(Data.getMaxCanvasWidth());
+                } else {
+                    canvas.setWidth(Double.valueOf(widthField.getText()));
+                }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.out.println("Bład z szerokością");
         }
 
         try {
             if (!grainH.matches("\\d*")) {
                 wrongFormatAlertMessage();
-                canvas.setHeight(Data.getHexHeight());
+
             } else {
-                canvas.setHeight(Double.valueOf(heightField.getText()));
+                if (Double.valueOf(heightField.getText()) > 1000) {
+                    showToBigCanvasAlert();
+                    canvas.setHeight(Data.getMaxCanvasHeight());
+                } else {
+                    canvas.setHeight(Double.valueOf(heightField.getText()));
+                }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.out.println("Bład z wysokościa");
         }
 
-        if (canvas.getWidth() > Data.getMaxCanvasWidth() || canvas.getHeight() > Data.getMaxCanvasHeight()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning Dialog");
-            alert.setContentText("Max size is 1000x1000!");
-
-            alert.showAndWait();
-        }
-        widthLabel.setText(String.valueOf(canvas.getWidth()));
-        heightLabel.setText(String.valueOf(canvas.getHeight()));
+        setCanvasSizeLabels();
 
         Data.setHexHeight(Integer.parseInt(grainSizeChoicebox.getValue()));
         grainGrowth.changeGridSize((int) canvas.getWidth(), (int) canvas.getHeight());
         clearCanvas();
+    }
+
+    public void showToBigCanvasAlert() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning Dialog");
+        alert.setContentText("Max size is 1000x1000!");
+        alert.showAndWait();
     }
 
     @FXML

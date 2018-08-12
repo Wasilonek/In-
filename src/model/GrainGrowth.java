@@ -5,18 +5,16 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
-/**
- * Created by Kamil on 2018-07-17.
- */
+
 public class GrainGrowth {
 
     private Grain[][] grainGrid;
 
-    private int indexRight, indexLeft, indexUp, indexDown;
-
     private Random random;
 
     private Map<Integer, Integer> grainMap;
+
+    private Map<Integer, Color> colorForEveryId , colorMap;
 
     private int hasGrainHasNeigbours;
 
@@ -25,14 +23,10 @@ public class GrainGrowth {
     int idToAssign;
 
 
-    // Do innej klasy
-
     private int s;
     private int t;
     private int r;
     private int h;
-
-    //********************************
 
 
     public GrainGrowth() {
@@ -42,16 +36,24 @@ public class GrainGrowth {
 
         grainMap = new HashMap<>();
 
+        colorMap = new HashMap<>();
+        colorForEveryId = new HashMap<>();
+
         id = 0;
         idToAssign = 0;
 
-        //setNeigboursForEachGrain();
-        // Do innej klasy
 
         h = Data.getHexHeight();
         r = h / 2;
         s = (int) (h / 1.73205);
         t = (int) (r / 1.73205);
+
+
+        for (int i = 0; i < 1000000; i++) {
+
+            colorForEveryId.put(i, (Color.color(random.nextDouble(), random.nextDouble(), random.nextDouble())));
+
+        }
 
         //*******************************************************
     }
@@ -66,15 +68,13 @@ public class GrainGrowth {
     }
 
     public void changeGridSize(int canvasWidth, int canvasHeight) {
-//        r = h / 2;
-//        s = (int) (h / 1.73205);
-//        t = (int) (r / 1.73205);
 
         Data.setHexColumns((canvasHeight / Data.getHexHeight()));
 
         Data.setHexRows((int) ((canvasWidth / Data.getHexHeight()) * 1.6));
 
         createGrid();
+
         System.out.println(Data.getHexRows() + " " + Data.getHexColumns());
     }
 
@@ -95,12 +95,9 @@ public class GrainGrowth {
             }
             grainGrid[x][y].setState(1);
             grainGrid[x][y].setId(i);
-            grainGrid[x][y].setColor(Color.color(random.nextDouble(), random.nextDouble(), random.nextDouble()));
-            //System.out.println(grainGrid[x][y].getId() + "/n ");
-            //grainGrid[x][y].setColor(Color.ORANGE);
+            grainGrid[x][y].setColor(colorForEveryId.get(grainGrid[x][y].getId()));
             i++;
         }
-
     }
 
     public void clearArray() {
@@ -125,7 +122,7 @@ public class GrainGrowth {
         s = (int) (h / 1.73205);
         t = (int) (r / 1.73205);
 
-        System.out.println("s:" + s + " h:" + h + " r:" + r + " t:" + t);
+        //System.out.println("s:" + s + " h:" + h + " r:" + r + " t:" + t);
 
         for (int i = 0; i < Data.getHexRows(); i++) {
             for (int j = 0; j < Data.getHexColumns(); j++) {
@@ -144,21 +141,12 @@ public class GrainGrowth {
         }
     }
 
-
-    public Grain[][] getGrainGrid() {
-        return grainGrid;
-    }
-
-    public Grain getGrain(int i, int j) {
-        return grainGrid[i][j];
-    }
-
     private void fillMap(int id, Map<Integer, Integer> grainMap) {
         if (grainMap.containsKey(id)) grainMap.put(id, grainMap.get(id) + 1);
         else grainMap.put(id, 1);
     }
 
-    private int getIDMaxNeighbour(Map<Integer, Integer> grainMap) {
+    private int getMaxNeighbourId(Map<Integer, Integer> grainMap) {
         Map.Entry<Integer, Integer> maxEntry = null;
 
         for (Map.Entry<Integer, Integer> entry : grainMap.entrySet())
@@ -182,13 +170,13 @@ public class GrainGrowth {
         return id;
     }
 
-    public boolean checkNeighbour(int indUp, int indRight) {
-        if (!(indUp == -1) && !(indRight == -1)) {
-            if (indUp < Data.getHexRows() - 1 && indRight < Data.getHexColumns() - 1) {
-                if (grainGrid[indUp][indRight].getState() == 1) {
-                    id = grainGrid[indUp][indRight].getId();
+    public boolean checkNeighbour(int i, int j) {
+        if (!(i == -1) && !(j == -1)) {
+            if (i < Data.getHexRows() - 1 && j < Data.getHexColumns() - 1) {
+                if (grainGrid[i][j].getState() == 1) {
+                    id = grainGrid[i][j].getId();
                     fillMap(id, grainMap);
-                    //colorMap.put(id, grainsArray[indUp][indRight].getColor());
+                    colorMap.put(id, grainGrid[i][j].getColor());
                     return true;
                 }
             }
@@ -196,11 +184,7 @@ public class GrainGrowth {
         return false;
     }
 
-
     public void setNeigboursForEachGrain() {
-
-
-
         for (int i = 0; i < Data.getHexRows(); i++) {
             for (int j = 0; j < Data.getHexColumns(); j++) {
                 grainMap.clear();
@@ -212,7 +196,7 @@ public class GrainGrowth {
 
                     if (i % 2 == 0) {
 
-                        if (checkNeighbour(i - 1, j + 1)) {
+                        if (checkNeighbour(i - 1, j - 1)) {
                             hasGrainHasNeigbours++;
                         }
 
@@ -237,50 +221,67 @@ public class GrainGrowth {
                         }
 
                         if (hasGrainHasNeigbours > 0) {
-                            idToAssign = getIDMaxNeighbour(grainMap);
+                            idToAssign = getMaxNeighbourId(grainMap);
                             grainGrid[i][j].setNextState(1);
-                            grainGrid[i][j].setColor(Color.GREEN);
+                            grainGrid[i][j].setColor(colorMap.get(idToAssign));
                             grainGrid[i][j].setId(idToAssign);
                         }
-                    }
-                } else if (i % 2 != 0) {
+
+                    } else if (i % 2 != 0) {
 
 
-                    if (checkNeighbour(i - 1, j)) {
-                        hasGrainHasNeigbours++;
-                    }
+                        if (checkNeighbour(i - 1, j)) {
+                            hasGrainHasNeigbours++;
+                        }
 
-                    if (checkNeighbour(i, j - 1)) {
-                        hasGrainHasNeigbours++;
-                    }
+                        if (checkNeighbour(i, j - 1)) {
+                            hasGrainHasNeigbours++;
+                        }
 
-                    if (checkNeighbour(i + 1, j)) {
-                        hasGrainHasNeigbours++;
-                    }
+                        if (checkNeighbour(i + 1, j)) {
+                            hasGrainHasNeigbours++;
+                        }
 
-                    if (checkNeighbour(i + 1, j + 1)) {
-                        hasGrainHasNeigbours++;
-                    }
+                        if (checkNeighbour(i + 1, j + 1)) {
+                            hasGrainHasNeigbours++;
+                        }
 
-                    if (checkNeighbour(i, j + 1)) {
-                        hasGrainHasNeigbours++;
-                    }
+                        if (checkNeighbour(i, j + 1)) {
+                            hasGrainHasNeigbours++;
+                        }
 
-                    if (checkNeighbour(i - 1, j + 1)) {
-                        hasGrainHasNeigbours++;
-                    }
+                        if (checkNeighbour(i - 1, j + 1)) {
+                            hasGrainHasNeigbours++;
+                        }
 
-                    if (hasGrainHasNeigbours > 0) {
-                        idToAssign = getIDMaxNeighbour(grainMap);
-                        grainGrid[i][j].setNextState(1);
-                        grainGrid[i][j].setColor(Color.BLUE);
-                        grainGrid[i][j].setId(idToAssign);
+                        if (hasGrainHasNeigbours > 0) {
+                            idToAssign = getMaxNeighbourId(grainMap);
+                            grainGrid[i][j].setNextState(1);
+                            grainGrid[i][j].setColor(colorMap.get(idToAssign));
+                            grainGrid[i][j].setId(idToAssign);
+                        }
                     }
                 }
             }
         }
         copyArray();
     }
+
+    public void showGrid() {
+        System.out.println();
+        System.out.println();
+        for (int i = 0; i < Data.getHexRows(); i++) {
+            for (int j = 0; j < Data.getHexColumns(); j++) {
+                if (grainGrid[i][j].getState() == 1) {
+                    System.out.print("# ");
+                } else {
+                    System.out.print("- ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
     public void copyArray() {
         for (int i = 0; i < Data.getHexRows(); i++) {
             for (int j = 0; j < Data.getHexColumns(); j++) {

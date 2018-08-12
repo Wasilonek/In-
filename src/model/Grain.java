@@ -5,11 +5,8 @@ import javafx.scene.paint.Color;
 public class Grain {
     private int state, nextState, id, newId;
     private Color color, newColor;
-    private Grain[] neighbours;
-
 
     public Grain() {
-        neighbours = new Grain[6];
         state = nextState = 0;
         id = newId = -1;
         newColor = Color.WHITE;
@@ -64,7 +61,4 @@ public class Grain {
         this.newColor = newColor;
     }
 
-    public void setSingleNeighbour(int index, Grain singleNeighbour) {
-        this.neighbours[index] = singleNeighbour;
-    }
 }
